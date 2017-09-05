@@ -102,11 +102,26 @@ int main() {
           */
           double steer_value;
           double throttle_value;
-          int iters = 50;
+
+
+          /****************************************
+          * 3. Convert map space to car space
+          ****************************************/
+
+          // Use Eigen vector as polyfit() requires it
+          Eigen::VectorXd   x_car_space = Eigen::VectorXd( ptsx.size() ) ;
+          Eigen::VectorXd   y_car_space = Eigen::VectorXd( ptsx.size() ) ;
+
+          for (int i = 0;   i < ptsx.size() ;   i++) {
+            x_car_space(i) = (ptsx[i] - px) * cos(psi) + (ptsy[i] - py) * sin(psi)  ;
+            y_car_space(i) = (ptsy[i] - py) * cos(psi) - (ptsx[i] - px) * sin(psi)  ;
+
+            }
+
 
           // The polynomial is fitted to a straight line so a polynomial with
           // order 1 is sufficient.
-          auto coeffs = polyfit(ptsx, ptsy, 1);
+          auto coeffs = polyfit(x_car_space, y_car_space, 1);
 
           // The cross track error is calculated by evaluating at polynomial at x, f(x)
           // and subtracting y.
@@ -127,10 +142,12 @@ int main() {
           std::vector<double> delta_vals = {};
           std::vector<double> a_vals = {};
 
-          for (size_t i = 0; i < iters; i++) {
-            std::cout << "Iteration " << i << std::endl;
+
+            std::cout << "Before main mpc Sove call" << std::endl;
 
             auto vars = mpc.Solve(state, coeffs);
+
+            std::cout << "After main mpc Sove call" << std::endl;
 
             x_vals.push_back(vars[0]);
             y_vals.push_back(vars[1]);
@@ -156,7 +173,7 @@ int main() {
             steer_value = vars[6];
             throttle_value = vars[7];
 
-          }
+
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
