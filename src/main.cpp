@@ -170,7 +170,7 @@ int main() {
             std::cout << "a = " << vars[7] << std::endl;
             std::cout << std::endl;
 
-            steer_value = vars[6];
+            steer_value = -vars[6]/deg2rad(25);
             throttle_value = vars[7];
 
 
@@ -194,6 +194,11 @@ int main() {
           //Display the waypoints/reference line
           vector<double> next_x_vals;
           vector<double> next_y_vals;
+
+          for (int i = 0;  i < x_car_space.size();  i++) {
+              next_x_vals.push_back(x_car_space[i] ) ;
+              next_y_vals.push_back(y_car_space[i] ) ;
+             }
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
