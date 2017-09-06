@@ -121,7 +121,7 @@ int main() {
 
           // The polynomial is fitted to a straight line so a polynomial with
           // order 1 is sufficient.
-          auto coeffs = polyfit(x_car_space, y_car_space, 1);
+          auto coeffs = polyfit(x_car_space, y_car_space, 3);
 
           // The cross track error is calculated by evaluating at polynomial at x, f(x)
           // and subtracting y.
@@ -169,9 +169,10 @@ int main() {
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
-          for(int i=0;i<10;i+2){  // i< N but main did not know N is.
+          for(int i=0;i<20;i+=2){  // i< 2*N but main did not know N is.
               mpc_x_vals.push_back(vars[2+i]);
               mpc_y_vals.push_back(vars[3+i]);
+              //std:cout << "x: " << vars[2+i] << " y:" <<vars[3+i] << std::endl;
           }
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system

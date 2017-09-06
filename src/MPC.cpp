@@ -280,6 +280,9 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
   vector<double> MPC_return;
 
+  std::cout << "delta_start:" << delta_start << " value: " << solution.x[delta_start] << std::endl;
+  std::cout << "a start:" << a_start << " value:" << solution.x[a_start] << std::endl;
+
   MPC_return.push_back(solution.x[delta_start]);
   MPC_return.push_back(solution.x[a_start]);
 
