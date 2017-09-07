@@ -71,6 +71,7 @@ int main() {
   // MPC is initialized here!
   MPC mpc;
 
+
   h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -100,7 +101,8 @@ int main() {
           * Both are in between [-1, 1].
           *
           */
-          double steer_value;
+
+          double steer_value=j[1]["steering_angle"];;
           double throttle_value;
 
 
@@ -131,6 +133,20 @@ int main() {
           // reference to: https://discussions.udacity.com/t/suggestions-on-how-to-debug-visualize-mpc/274944/6
           double epsi = - atan(coeffs[1]);
 
+           /*
+          // add latency 100ms
+          double latency = 0.1;
+          double Lf = 2.67;
+          v *= 0.44704; // convert from mph to m/s
+          px = 0 + v * cos(steer_value) * latency; // px: px0 = 0, due to the car coordinate system
+          py = 0 + v * sin(steer_value) * latency; // py: py0 = 0, due to the car coordinate system
+          psi = - v / Lf * steer_value * latency; // psi: psi0 = 0, due to the car coordinate system
+          double cte = polyeval(coeffs, px) - 0; // since py0=0
+          double epsi = atan(coeffs[1]+2*coeffs[2]*px + 3*coeffs[3]*px*px);
+
+
+          Eigen::VectorXd state(6);
+          state << px, py, psi, v, cte, epsi;*/
           Eigen::VectorXd state(6);
           state << 0, 0, 0, v, cte, epsi;
 
@@ -142,6 +158,9 @@ int main() {
           std::vector<double> epsi_vals = {state[5]};
           std::vector<double> delta_vals = {};
           std::vector<double> a_vals = {};
+
+
+
 
 
             std::cout << "Before main mpc Sove call" << std::endl;
