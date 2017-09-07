@@ -121,7 +121,7 @@ int main() {
 
           // The polynomial is fitted to a straight line so a polynomial with
           // order 1 is sufficient.
-          auto coeffs = polyfit(x_car_space, y_car_space, 2);
+          auto coeffs = polyfit(x_car_space, y_car_space, 3);
 
           // The cross track error is calculated by evaluating at polynomial at x, f(x)
           // and subtracting y.
