@@ -102,15 +102,12 @@ int main() {
           *
           */
 
-          double steer_value=j[1]["steering_angle"];;
+          double steer_value;
           double throttle_value;
 
+	         steer_value=j[1]["steering_angle"];
 
-          /****************************************
-          * 3. Convert map space to car space
-          ****************************************/
-
-          // Use Eigen vector as polyfit() requires it
+	          //convert the cordinate space between car and map.
           Eigen::VectorXd   x_car_space = Eigen::VectorXd( ptsx.size() ) ;
           Eigen::VectorXd   y_car_space = Eigen::VectorXd( ptsx.size() ) ;
 
@@ -120,27 +117,16 @@ int main() {
 
             }
 
-
-          // The polynomial is fitted to a straight line so a polynomial with
-          // order 1 is sufficient.
           auto coeffs = polyfit(x_car_space, y_car_space, 3);
 
-          // The cross track error is calculated by evaluating at polynomial at x, f(x)
-          // and subtracting y.
-          //double cte = polyeval(coeffs, 0);
-          // Due to the sign starting at 0, the orientation error is -f'(x).
-          // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
-          // reference to: https://discussions.udacity.com/t/suggestions-on-how-to-debug-visualize-mpc/274944/6
-          //double epsi = - atan(coeffs[1]);
 
-           
           // add latency 100ms
           double latency = 0.1;
           double Lf = 2.67;
           v *= 0.44704; // convert from mph to m/s
-          px = 0 + v * cos(steer_value) * latency; // px: px0 = 0, due to the car coordinate system
-          py = 0 + v * sin(steer_value) * latency; // py: py0 = 0, due to the car coordinate system
-          psi = - v / Lf * steer_value * latency; // psi: psi0 = 0, due to the car coordinate system
+          px = 0 + v * cos(steer_value) * latency; // px: px0 = 0
+          py = 0 + v * sin(steer_value) * latency; // py: py0 = 0
+          psi = - v / Lf * steer_value * latency; // psi: psi0 = 0
           double cte = polyeval(coeffs, px) - 0; // since py0=0
           double epsi = atan(coeffs[1]+2*coeffs[2]*px + 3*coeffs[3]*px*px);
 
@@ -159,24 +145,14 @@ int main() {
           std::vector<double> delta_vals = {};
           std::vector<double> a_vals = {};
 
-
-
-
-
-            std::cout << "Before main mpc Sove call" << std::endl;
+            std::cout << "Before" << std::endl;
 
             auto vars = mpc.Solve(state, coeffs);
 
-            std::cout << "After main mpc Solve call" << std::endl;
-
-
-
+            std::cout << "After" << std::endl;
 
             steer_value = -vars[0]/deg2rad(25);
             throttle_value = vars[1];
-
-
-
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
@@ -184,7 +160,7 @@ int main() {
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
 
-          //Display the MPC predicted trajectory 
+          //Display the MPC predicted trajectory
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
