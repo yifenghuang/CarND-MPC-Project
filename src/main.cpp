@@ -114,7 +114,6 @@ int main() {
           for (int i = 0;   i < ptsx.size() ;   i++) {
             x_car_space(i) = (ptsx[i] - px) * cos(psi) + (ptsy[i] - py) * sin(psi)  ;
             y_car_space(i) = (ptsy[i] - py) * cos(psi) - (ptsx[i] - px) * sin(psi)  ;
-
             }
 
           auto coeffs = polyfit(x_car_space, y_car_space, 3);
