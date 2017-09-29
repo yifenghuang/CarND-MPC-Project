@@ -6,7 +6,7 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 16;
+size_t N = 22;
 double dt = 0.2;
 
 // This value assumes the model presented in the classroom is used.
@@ -21,7 +21,8 @@ double dt = 0.2;
 // This is the length from front to CoG that has a similar radius.
 const double Lf = 2.67;
 
-double ref_v = 20;
+double ref_v = 80;
+
 size_t x_start = 0;
 size_t y_start = x_start + N;
 size_t psi_start = y_start + N;
@@ -104,8 +105,8 @@ class FG_eval {
       // Only consider the actuation at time t.
       AD<double> delta0 = vars[delta_start + t - 1];
       AD<double> a0 = vars[a_start + t - 1];
-      AD<double> f0 = coeffs[0] + coeffs[1] * x0;
-      AD<double> psides0 = CppAD::atan(coeffs[1]);
+      AD<double> f0 = coeffs[3] * x0 * x0 * x0+coeffs[2] * x0 * x0+coeffs[1] * x0+coeffs[0];
+      AD<double> psides0 = CppAD::atan(3*coeffs[3] * x0 * x0+2*coeffs[2] * x0+coeffs[1]);
 
       // get started.
       // constraint the value to 0.
