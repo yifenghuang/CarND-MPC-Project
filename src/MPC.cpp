@@ -21,7 +21,7 @@ double dt = 0.2;
 // This is the length from front to CoG that has a similar radius.
 const double Lf = 2.67;
 
-double ref_v = 80;
+double ref_v = 55;
 
 size_t x_start = 0;
 size_t y_start = x_start + N;
@@ -66,7 +66,7 @@ class FG_eval {
 
       // Minimize the value gap between sequential actuations.
       for (int t = 0; t < N - 2; t++) {
-        fg[0] += 200*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+        fg[0] += 1200*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
         fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
 
   	}
@@ -147,6 +147,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs)
   double v = state[3];
   double cte = state[4];
   double epsi = state[5];
+  double prevA=0;
+  double prevDelta=0;
   size_t n_vars = N*6+(N-1)*2;
 
   // TODO: Set the number of constraints
@@ -181,6 +183,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs)
     for (int i = delta_start; i < a_start; i++) {
       vars_lowerbound[i] = -0.436332;
       vars_upperbound[i] = 0.436332;
+      //vars_lowerbound[i] = 0-prevDelta;
+      //vars_upperbound[i] = prevDelta;
     }
 
     // Acceleration/decceleration upper and lower limits.
@@ -188,6 +192,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs)
     for (int i = a_start; i < n_vars; i++) {
       vars_lowerbound[i] = -1.0;
       vars_upperbound[i] = 1.0;
+      //vars_lowerbound[i] = 0-prevA;
+      //vars_upperbound[i] = prevA;
     }
 
 
@@ -268,6 +274,11 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs)
 
   MPC_return.push_back(solution.x[delta_start]);
   MPC_return.push_back(solution.x[a_start]);
+
+  //MPC_return.push_back(solution.x[delta_start+1]);
+  //MPC_return.push_back(solution.x[a_start+1]);
+  //prevDelta=solution.x[delta_start+1];
+  //prevA=solution.x[a_start+1];
 
   for(int i=0; i< N; i++){
       MPC_return.push_back(solution.x[x_start+i]);
